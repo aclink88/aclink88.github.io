@@ -19,8 +19,10 @@ function loadReadMe(repoName) {
     .then(readmeText => {
         // Convert Markdown to HTML
         const readmeHtml = marked.parse(readmeText);
+        // Adjust image URLs to point to the GitHub raw content URL
+        const adjustedHtml = readmeHtml.replace(/src="(.\/)?(?!http)([^"]+)"/g, `src="https://raw.githubusercontent.com/${repoName}/master/$2"`);
         // Load README content into the readmeContent div
-        document.getElementById('readmeContent').innerHTML = `<div class="readme-container">${readmeHtml}</div>`;
+        document.getElementById('readmeContent').innerHTML = `<div class="readme-container">${adjustedHtml}</div>`;
     })
     .catch(error => console.error('Error loading the README:', error));
 }
