@@ -19,8 +19,8 @@ function loadReadMe(repoName) {
     .then(readmeText => {
         // Convert Markdown to HTML
         const readmeHtml = marked.parse(readmeText);
-        // Replace the entire body content with README content
-        document.body.innerHTML = `<div class="readme-container">${readmeHtml}</div>`;
+        // Load README content into the readmeContent div
+        document.getElementById('readmeContent').innerHTML = `<div class="readme-container">${readmeHtml}</div>`;
     })
     .catch(error => console.error('Error loading the README:', error));
 }
