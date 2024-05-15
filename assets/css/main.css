@@ -4723,3 +4723,12 @@ input, select, textarea {
 			}
 		}
 	}
+
+	ul.custom-hyphen {
+            list-style-type: none; /* Removes default list styling */
+            padding-left: 0; /* Removes default padding */
+        }
+        ul.custom-hyphen li::before {
+            content: "- "; /* Adds a hyphen before each list item */
+            padding-right: 5px; /* Adds spacing between the hyphen and the text */
+        }
