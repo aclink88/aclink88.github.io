@@ -4732,3 +4732,7 @@ input, select, textarea {
             content: "- "; /* Adds a hyphen before each list item */
             padding-right: 5px; /* Adds spacing between the hyphen and the text */
         }
+	ul.custom-hyphen li {
+        font-size: 14px; /* reduces the font size */
+        margin-bottom: 5px; /* reduces space below each item */
+    	}
