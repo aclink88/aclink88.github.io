@@ -4734,7 +4734,7 @@ input, select, textarea {
             padding-right: 5px; /* Adds spacing between the hyphen and the text */
         }
 	ul.custom-hyphen li {
-        font-size: 20px; /* reduces the font size */
+        font-size: 48px; /* reduces the font size */
         margin-bottom: 5px; /* reduces space below each item */
     	}
 	#l1 > li:last-child, #l2 + li {
