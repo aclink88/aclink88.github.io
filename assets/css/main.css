@@ -4727,12 +4727,16 @@ input, select, textarea {
 	ul.custom-hyphen {
             list-style-type: none; /* Removes default list styling */
             padding-left: 0; /* Removes default padding */
+	    margin-bottom: 0; /* remove any bottom margin */
         }
         ul.custom-hyphen li::before {
             content: "- "; /* Adds a hyphen before each list item */
             padding-right: 5px; /* Adds spacing between the hyphen and the text */
         }
 	ul.custom-hyphen li {
-        font-size: 14px; /* reduces the font size */
+        font-size: 18px; /* reduces the font size */
         margin-bottom: 5px; /* reduces space below each item */
+    	}
+	#l1 > li:last-child, #l2 + li {
+      	    margin-top: 5px; /* reduces the space between the last li of l2 and the next li of l1 */
     	}
