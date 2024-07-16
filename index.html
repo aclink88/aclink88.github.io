@@ -58,7 +58,71 @@
 						<h2>
 							This Week's Volo Formation
 						</h2></center>
-						<img src="images/formation.png" alt="volo" style="display: block; margin: 0 auto; width: 1000px; height: auto;">
+						<!-- <img src="images/formation.png" alt="volo" style="display: block; margin: 0 auto; width: 1000px; height: auto;"> -->
+						<style>
+							#soccer-field {
+								background-image: url('images/field.png'); /* Replace with your soccer field image */
+								background-size: cover;
+								width: 1000px;
+								height: 600px; /* Adjust height as needed */
+								position: relative;
+								margin: 0 auto;
+							}
+							.player {
+								position: absolute;
+								cursor: pointer;
+							}
+							.player .name {
+								display: none;
+							}
+							.player:hover .name {
+								display: block;
+							}
+							#controls {
+								text-align: center;
+								margin-top: 20px;
+							}
+						</style>
+
+						<div id="soccer-field"></div>
+						
+						<div id="controls">
+							<button id="clear-button">Clear Field</button>
+						</div>
+						
+						<script>
+							document.addEventListener('DOMContentLoaded', function() {
+								const soccerField = document.getElementById('soccer-field');
+								const clearButton = document.getElementById('clear-button');
+								
+								soccerField.addEventListener('click', function(event) {
+									const x = event.clientX - soccerField.offsetLeft;
+									const y = event.clientY - soccerField.offsetTop;
+									const player = document.createElement('div');
+									player.classList.add('player');
+									player.style.left = `${x}px`;
+									player.style.top = `${y}px`;
+									player.innerHTML = `
+	 									<div class="marker">X</div>
+                								<input type="text" class="name" placeholder="Player Name">
+									`;
+									
+									soccerField.appendChild(player);
+									
+									player.querySelector('input').addEventListener('change', function() {
+										const name = this.value;
+										const marker = player.querySelector('.marker');
+										marker.textContent = `${name}`;
+										this.style.display = 'none';
+									});
+								});
+								
+								clearButton.addEventListener('click', function() {
+									soccerField.innerHTML = '';
+								});
+							});
+						</script>
+
         					<img src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExazJ4bGFyMDQ3NDcxbDQ0NDNpeTczdnlxZDQzdmQ2cTM5eWdmY3RkZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o7buiO0t8uLXHBDXO/giphy.gif" alt="CrowMilk" style="display: block; margin: 0 auto; width: 800px; height: auto;">
     					</h1>
 						<div class="image-txt-container">
