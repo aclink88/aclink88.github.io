@@ -107,7 +107,7 @@
 									const x = event.clientX - rect.left;
 									const y = event.clientY - rect.top;
 									
-									const player = createPlayer(x, y, 'X');
+									const player = createPlayer(x, y, 'X', false);
             								soccerField.appendChild(player);
 
             								saveMarkers();
@@ -128,13 +128,18 @@
                 								<input type="text" class="name" placeholder="Player Name" style="font-size: 14px;">
             								`;
 
-            								player.querySelector('input').addEventListener('change', function() {
+            								const input = player.querySelector('input');
+            								if (nameEntered) {
+                								input.style.display = 'none';
+            								}
+
+            								input.addEventListener('change', function() {
                 								const name = this.value;
                 								const marker = player.querySelector('.marker');
                 								marker.textContent = name;
                 								this.style.display = 'none';
                 								saveMarkers();
-									});
+            								});
 									
 									return player;
 								}
@@ -146,7 +151,7 @@
 										const name = player.querySelector('.marker').textContent;
                 								const x = parseFloat(player.style.left);
                 								const y = parseFloat(player.style.top);
-										markers.push({ x, y, name });
+										markers.push({ x, y, name, nameEntered });
 									});
 									localStorage.setItem('markers', JSON.stringify(markers));
 								}
@@ -154,7 +159,7 @@
 								function loadMarkers() {
 									const markers = JSON.parse(localStorage.getItem('markers')) || [];
 									markers.forEach(marker => {
-										const player = createPlayer(marker.x, marker.y, marker.name);
+										const player = createPlayer(marker.x, marker.y, marker.name, marker.nameEntered);
 										soccerField.appendChild(player);
 									});
 								}
