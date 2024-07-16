@@ -151,6 +151,7 @@
 										const name = player.querySelector('.marker').textContent;
                 								const x = parseFloat(player.style.left);
                 								const y = parseFloat(player.style.top);
+										const nameEntered = player.querySelector('input').style.display === 'none';
 										markers.push({ x, y, name, nameEntered });
 									});
 									localStorage.setItem('markers', JSON.stringify(markers));
