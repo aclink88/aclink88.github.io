@@ -64,19 +64,19 @@
 								background-image: url('images/field.jpg'); /* Replace with your soccer field image */
 								background-size: cover;
 								width: 1000px;
-								height: 600px; /* Adjust height as needed */
+								height: auto; /* Adjust height as needed */
 								position: relative;
 								margin: 0 auto;
+								border: 1px solid #000;
 							}
 							.player {
 								position: absolute;
 								cursor: pointer;
+								font-size: 12px;
+								transform: translate(-50%, -50%);
 							}
-							.player .name {
-								display: none;
-							}
-							.player:hover .name {
-								display: block;
+							.marker {
+								font-size: 20px;
 							}
 							#controls {
 								text-align: center;
@@ -96,15 +96,22 @@
 								const clearButton = document.getElementById('clear-button');
 								
 								soccerField.addEventListener('click', function(event) {
-									const x = event.clientX - soccerField.offsetLeft;
-									const y = event.clientY - soccerField.offsetTop;
+									// Prevent adding a marker if clicking on an existing player or input
+									if (event.target.classList.contains('player') || event.target.classList.contains('name')) {
+										return;
+									}
+									
+									const rect = soccerField.getBoundingClientRect();
+									const x = event.clientX - rect.left;
+									const y = event.clientY - rect.top;
+									
 									const player = document.createElement('div');
 									player.classList.add('player');
 									player.style.left = `${x}px`;
 									player.style.top = `${y}px`;
 									player.innerHTML = `
 	 									<div class="marker">X</div>
-                								<input type="text" class="name" placeholder="Player Name">
+                								<input type="text" class="name" placeholder="Player Name" style="font-size: 14px;">
 									`;
 									
 									soccerField.appendChild(player);
