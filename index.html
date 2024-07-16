@@ -87,15 +87,17 @@
 						
 						<div id="controls">
 							<button id="clear-button">Clear Field</button>
+							<button id="save-button">Save Formation</button>
 						</div>
 						
 						<script>
 							document.addEventListener('DOMContentLoaded', function() {
 								const soccerField = document.getElementById('soccer-field');
 								const clearButton = document.getElementById('clear-button');
+								const saveButton = document.getElementById('save-button');
 
-								// Load saved markers from localStorage
-								loadMarkers();
+								// Load saved formation (if any)
+        							loadSavedImage();
 								
 								soccerField.addEventListener('click', function(event) {
 									// Prevent adding a marker if clicking on an existing player or input
@@ -109,13 +111,15 @@
 									
 									const player = createPlayer(x, y, 'X', false);
             								soccerField.appendChild(player);
-
-            								saveMarkers();
 								});
 								
 								clearButton.addEventListener('click', function() {
 									soccerField.innerHTML = '';
-									localStorage.removeItem('markers');
+									localStorage.removeItem('savedImage');
+								});
+
+								saveButton.addEventListener('click', function() {
+            								saveImage();
 								});
 
 								function createPlayer(x, y, name, nameEntered) {
@@ -138,32 +142,49 @@
                 								const marker = player.querySelector('.marker');
                 								marker.textContent = name;
                 								this.style.display = 'none';
-                								saveMarkers();
             								});
 									
 									return player;
 								}
-								
-								function saveMarkers() {
-									const markers = [];
-            								const players = document.querySelectorAll('.player');
-            								players.forEach(player => {
-										const name = player.querySelector('.marker').textContent;
-                								const x = parseFloat(player.style.left);
-                								const y = parseFloat(player.style.top);
-										const nameEntered = player.querySelector('input').style.display === 'none';
-										markers.push({ x, y, name, nameEntered });
-									});
-									localStorage.setItem('markers', JSON.stringify(markers));
-								}
-								
-								function loadMarkers() {
-									const markers = JSON.parse(localStorage.getItem('markers')) || [];
-									markers.forEach(marker => {
-										const player = createPlayer(marker.x, marker.y, marker.name, marker.nameEntered);
-										soccerField.appendChild(player);
-									});
-								}
+
+								function saveImage() {
+							            const canvas = document.createElement('canvas');
+							            canvas.width = soccerField.offsetWidth;
+							            canvas.height = soccerField.offsetHeight;
+							            const ctx = canvas.getContext('2d');
+
+							            const img = new Image();
+							            img.src = 'images/field.png'; // Replace with your soccer field image
+							            img.onload = function() {
+							                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+							
+							                const players = document.querySelectorAll('.player');
+							                players.forEach(player => {
+							                    const x = parseFloat(player.style.left);
+							                    const y = parseFloat(player.style.top);
+							                    const name = player.querySelector('.marker').textContent;
+							
+							                    ctx.fillStyle = 'red';
+							                    ctx.beginPath();
+							                    ctx.arc(x, y, 5, 0, Math.PI * 2);
+							                    ctx.fill();
+							
+							                    ctx.fillStyle = 'black';
+							                    ctx.font = '14px Arial';
+							                    ctx.fillText(name, x + 10, y);
+							                });
+							
+							                const image = canvas.toDataURL('image/png');
+							                localStorage.setItem('savedImage', image);
+							            };
+							        }
+
+								function loadSavedImage() {
+							            const savedImage = localStorage.getItem('savedImage');
+							            if (savedImage) {
+							                soccerField.style.backgroundImage = `url('${savedImage}')`;
+							            }
+							        }								
 							});
 						</script>
 
