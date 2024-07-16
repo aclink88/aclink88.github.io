@@ -93,6 +93,9 @@
 							document.addEventListener('DOMContentLoaded', function() {
 								const soccerField = document.getElementById('soccer-field');
 								const clearButton = document.getElementById('clear-button');
+
+								// Load saved markers from localStorage
+								loadMarkers();
 								
 								soccerField.addEventListener('click', function(event) {
 									// Prevent adding a marker if clicking on an existing player or input
@@ -104,28 +107,56 @@
 									const x = event.clientX - rect.left;
 									const y = event.clientY - rect.top;
 									
-									const player = document.createElement('div');
-									player.classList.add('player');
-									player.style.left = `${x}px`;
-									player.style.top = `${y}px`;
-									player.innerHTML = `
-	 									<div class="marker">X</div>
-                								<input type="text" class="name" placeholder="Player Name" style="font-size: 14px;">
-									`;
-									
-									soccerField.appendChild(player);
-									
-									player.querySelector('input').addEventListener('change', function() {
-										const name = this.value;
-										const marker = player.querySelector('.marker');
-										marker.textContent = `${name}`;
-										this.style.display = 'none';
-									});
+									const player = createPlayer(x, y, 'X');
+            								soccerField.appendChild(player);
+
+            								saveMarkers();
 								});
 								
 								clearButton.addEventListener('click', function() {
 									soccerField.innerHTML = '';
 								});
+
+								function createPlayer(x, y, name) {
+            								const player = document.createElement('div');
+            								player.classList.add('player');
+            								player.style.left = `${x}px`;
+            								player.style.top = `${y}px`;
+            								player.innerHTML = `
+                								<div class="marker">${name}</div>
+                								<input type="text" class="name" placeholder="Player Name" style="font-size: 14px;">
+            								`;
+
+            								player.querySelector('input').addEventListener('change', function() {
+                								const name = this.value;
+                								const marker = player.querySelector('.marker');
+                								marker.textContent = name;
+                								this.style.display = 'none';
+                								saveMarkers();
+									});
+									
+									return player;
+								}
+								
+								function saveMarkers() {
+									const markers = [];
+            								const players = document.querySelectorAll('.player');
+            								players.forEach(player => {
+										const name = player.querySelector('.marker').textContent;
+                								const x = parseFloat(player.style.left);
+                								const y = parseFloat(player.style.top);
+										markers.push({ x, y, name });
+									});
+									localStorage.setItem('markers', JSON.stringify(markers));
+								}
+								
+								function loadMarkers() {
+									const markers = JSON.parse(localStorage.getItem('markers')) || [];
+									markers.forEach(marker => {
+										const player = createPlayer(marker.x, marker.y, marker.name);
+										soccerField.appendChild(player);
+									});
+								}
 							});
 						</script>
 
