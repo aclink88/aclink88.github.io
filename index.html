@@ -117,13 +117,12 @@
                                     soccerField.innerHTML = '';
                                     localStorage.removeItem('savedImage');
                                     localStorage.removeItem('markers');
-                                    saveMarkersToGitHub([]);
                                 });
-                            
+                        
                                 saveButton.addEventListener('click', function() {
                                     saveImage();
                                 });
-                            
+                        
                                 function createPlayer(x, y, name, nameEntered) {
                                     const player = document.createElement('div');
                                     player.classList.add('player');
@@ -133,32 +132,29 @@
                                         <div class="marker">${name}</div>
                                         <textarea class="name" placeholder="Player Name" style="font-size: 14px;"></textarea>
                                     `;
-                            
+                        
                                     const textarea = player.querySelector('textarea');
                                     if (nameEntered) {
                                         textarea.style.display = 'none';
                                     }
-                            
+                        
                                     textarea.addEventListener('keydown', function(event) {
                                         if (event.key === 'Enter') {
                                             event.preventDefault();
-                                            const marker = player.querySelector('.marker');
-                                            marker.innerHTML = this.value.replace(/\n/g, '<br>');
-                                            this.style.display = 'none';
-                                            saveMarkers();
+                                            this.value += '\n';
                                         }
                                     });
-                            
+                        
                                     textarea.addEventListener('blur', function() {
                                         const marker = player.querySelector('.marker');
                                         marker.innerHTML = this.value.replace(/\n/g, '<br>');
                                         this.style.display = 'none';
                                         saveMarkers();
                                     });
-                            
+                        
                                     return player;
                                 }
-                            
+                        
                                 function saveMarkers() {
                                     const markers = [];
                                     const players = document.querySelectorAll('.player');
@@ -169,110 +165,59 @@
                                         markers.push({ x, y, name });
                                     });
                                     localStorage.setItem('markers', JSON.stringify(markers));
-                                    saveMarkersToGitHub(markers);
                                 }
-                                
-                                async function saveMarkersToGitHub(markers) {
-                                    const token = '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';
-                                    const repo = 'aclink88/aclink88.github.io';
-                                    const path = 'markers.json';
-                                    const url = `https://api.github.com/repos/${repo}/contents/${path}`;
-                                    const content = btoa(JSON.stringify(markers));
                         
-                                    // Fetch current file information to get the SHA
-                                    let sha;
-                                    try {
-                                        const response = await fetch(url, {
-                                            headers: {
-                                                'Authorization': `token ${token}`
-                                            }
+                                function loadMarkers() {
+                                    const markers = JSON.parse(localStorage.getItem('markers'));
+                                    if (markers) {
+                                        markers.forEach(marker => {
+                                            const player = createPlayer(marker.x, marker.y, marker.name, true);
+                                            soccerField.appendChild(player);
                                         });
-                                        if (response.ok) {
-                                            const data = await response.json();
-                                            sha = data.sha;
-                                        }
-                                    } catch (error) {
-                                        console.error('Error fetching SHA:', error);
-                                    }
-                        
-                                    // Save or update file
-                                    try {
-                                        const response = await fetch(url, {
-                                            method: 'PUT',
-                                            headers: {
-                                                'Authorization': `token ${token}`,
-                                                'Content-Type': 'application/json'
-                                            },
-                                            body: JSON.stringify({
-                                                message: 'Update markers.json',
-                                                content: content,
-                                                sha: sha
-                                            })
-                                        });
-                                        const data = await response.json();
-                                        console.log('Save to GitHub response:', data);
-                                    } catch (error) {
-                                        console.error('Error saving markers to GitHub:', error);
                                     }
                                 }
                         
-                                async function loadMarkers() {
-                                    const url = 'https://raw.githubusercontent.com/aclink88/aclink88.github.io/main/markers.json';
-                                    try {
-                                        const response = await fetch(url);
-                                        if (response.ok) {
-                                            const markers = await response.json();
-                                            markers.forEach(marker => {
-                                                const player = createPlayer(marker.x, marker.y, marker.name, true);
-                                                soccerField.appendChild(player);
-                                            });
-                                        }
-                                    } catch (error) {
-                                        console.error('Error loading markers:', error);
-                                    }
-                                }
-                            
                                 function saveImage() {
                                     const canvas = document.createElement('canvas');
                                     canvas.width = soccerField.offsetWidth;
                                     canvas.height = soccerField.offsetHeight;
                                     const ctx = canvas.getContext('2d');
-                            
+                        
                                     const img = new Image();
                                     img.src = 'images/field.jpg'; // Replace with your soccer field image
                                     img.onload = function() {
                                         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                            
+                        
                                         const players = document.querySelectorAll('.player');
                                         players.forEach(player => {
                                             const x = parseFloat(player.style.left);
                                             const y = parseFloat(player.style.top);
                                             const markerText = player.querySelector('.marker').innerHTML;
-                            
+                        
                                             ctx.fillStyle = 'red';
                                             ctx.beginPath();
                                             ctx.arc(x, y, 5, 0, Math.PI * 2);
                                             ctx.fill();
-                            
+                        
                                             ctx.fillStyle = 'black';
                                             ctx.font = '14px Arial';
                                             markerText.split('<br>').forEach((line, index) => {
                                                 ctx.fillText(line, x + 10, y + (index * 15));
                                             });
                                         });
-                            
+                        
                                         const image = canvas.toDataURL('image/jpg');
                                         localStorage.setItem('savedImage', image);
                                     };
                                 }
-                            
+                        
                                 function loadSavedImage() {
                                     const savedImage = localStorage.getItem('savedImage');
                                     if (savedImage) {
                                         soccerField.style.backgroundImage = `url('${savedImage}')`;
                                     }
                                     loadMarkers();
-                                }					
+                                }						
 							});
 						</script>
 
