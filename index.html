@@ -171,45 +171,65 @@
                                     localStorage.setItem('markers', JSON.stringify(markers));
                                     saveMarkersToGitHub(markers);
                                 }
-                            
-                                function saveMarkersToGitHub(markers) {
-                                    // Use GitHub API to save markers.json to your GitHub repository
+                                
+                                async function saveMarkersToGitHub(markers) {
                                     const token = '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';
                                     const repo = 'aclink88/aclink88.github.io';
                                     const path = 'markers.json';
                                     const url = `https://api.github.com/repos/${repo}/contents/${path}`;
                                     const content = btoa(JSON.stringify(markers));
-                            
-                                    fetch(url, {
-                                        method: 'PUT',
-                                        headers: {
-                                            'Authorization': `token ${token}`,
-                                            'Content-Type': 'application/json'
-                                        },
-                                        body: JSON.stringify({
-                                            message: 'Update markers.json',
-                                            content: content,
-                                            sha: localStorage.getItem('markersSha') // Store the SHA to avoid conflicts
-                                        })
-                                    })
-                                    .then(response => response.json())
-                                    .then(data => {
-                                        localStorage.setItem('markersSha', data.content.sha); // Save the new SHA
-                                    })
-                                    .catch(error => console.error('Error saving markers to GitHub:', error));
+                        
+                                    // Fetch current file information to get the SHA
+                                    let sha;
+                                    try {
+                                        const response = await fetch(url, {
+                                            headers: {
+                                                'Authorization': `token ${token}`
+                                            }
+                                        });
+                                        if (response.ok) {
+                                            const data = await response.json();
+                                            sha = data.sha;
+                                        }
+                                    } catch (error) {
+                                        console.error('Error fetching SHA:', error);
+                                    }
+                        
+                                    // Save or update file
+                                    try {
+                                        const response = await fetch(url, {
+                                            method: 'PUT',
+                                            headers: {
+                                                'Authorization': `token ${token}`,
+                                                'Content-Type': 'application/json'
+                                            },
+                                            body: JSON.stringify({
+                                                message: 'Update markers.json',
+                                                content: content,
+                                                sha: sha
+                                            })
+                                        });
+                                        const data = await response.json();
+                                        console.log('Save to GitHub response:', data);
+                                    } catch (error) {
+                                        console.error('Error saving markers to GitHub:', error);
+                                    }
                                 }
-                            
-                                function loadMarkers() {
+                        
+                                async function loadMarkers() {
                                     const url = 'https://raw.githubusercontent.com/aclink88/aclink88.github.io/main/markers.json';
-                                    fetch(url)
-                                        .then(response => response.json())
-                                        .then(markers => {
+                                    try {
+                                        const response = await fetch(url);
+                                        if (response.ok) {
+                                            const markers = await response.json();
                                             markers.forEach(marker => {
                                                 const player = createPlayer(marker.x, marker.y, marker.name, true);
                                                 soccerField.appendChild(player);
                                             });
-                                        })
-                                        .catch(error => console.error('Error loading markers:', error));
+                                        }
+                                    } catch (error) {
+                                        console.error('Error loading markers:', error);
+                                    }
                                 }
                             
                                 function saveImage() {
