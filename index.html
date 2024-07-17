@@ -114,77 +114,110 @@
 								});
 								
 								clearButton.addEventListener('click', function() {
-									soccerField.innerHTML = '';
-									localStorage.removeItem('savedImage');
-								});
-
-								saveButton.addEventListener('click', function() {
-            								saveImage();
-								});
-
-								function createPlayer(x, y, name, nameEntered) {
-            								const player = document.createElement('div');
-            								player.classList.add('player');
-            								player.style.left = `${x}px`;
-            								player.style.top = `${y}px`;
-            								player.innerHTML = `
-                								<div class="marker">${name}</div>
-                								<input type="text" class="name" placeholder="Player Name" style="font-size: 14px;">
-            								`;
-
-            								const input = player.querySelector('input');
-            								if (nameEntered) {
-                								input.style.display = 'none';
-            								}
-
-            								input.addEventListener('change', function() {
-                								const name = this.value;
-                								const marker = player.querySelector('.marker');
-                								marker.textContent = name;
-                								this.style.display = 'none';
-            								});
-									
-									return player;
-								}
-
-								function saveImage() {
-							            const canvas = document.createElement('canvas');
-							            canvas.width = soccerField.offsetWidth;
-							            canvas.height = soccerField.offsetHeight;
-							            const ctx = canvas.getContext('2d');
-
-							            const img = new Image();
-							            img.src = 'images/field.jpg'; // Replace with your soccer field image
-							            img.onload = function() {
-							                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-							
-							                const players = document.querySelectorAll('.player');
-							                players.forEach(player => {
-							                    const x = parseFloat(player.style.left);
-							                    const y = parseFloat(player.style.top);
-							                    const name = player.querySelector('.marker').textContent;
-							
-							                    ctx.fillStyle = 'red';
-							                    ctx.beginPath();
-							                    ctx.arc(x, y, 5, 0, Math.PI * 2);
-							                    ctx.fill();
-							
-							                    ctx.fillStyle = 'black';
-							                    ctx.font = '14px Arial';
-							                    ctx.fillText(name, x + 10, y);
-							                });
-							
-							                const image = canvas.toDataURL('image/png');
-							                localStorage.setItem('savedImage', image);
-							            };
-							        }
-
-								function loadSavedImage() {
-							            const savedImage = localStorage.getItem('savedImage');
-							            if (savedImage) {
-							                soccerField.style.backgroundImage = `url('${savedImage}')`;
-							            }
-							        }								
+                                    soccerField.innerHTML = '';
+                                    localStorage.removeItem('savedImage');
+                                    localStorage.removeItem('markers');
+                                });
+                        
+                                saveButton.addEventListener('click', function() {
+                                    saveImage();
+                                });
+                        
+                                function createPlayer(x, y, name, nameEntered) {
+                                    const player = document.createElement('div');
+                                    player.classList.add('player');
+                                    player.style.left = `${x}px`;
+                                    player.style.top = `${y}px`;
+                                    player.innerHTML = `
+                                        <div class="marker">${name}</div>
+                                        <textarea class="name" placeholder="Player Name" style="font-size: 14px;"></textarea>
+                                    `;
+                        
+                                    const textarea = player.querySelector('textarea');
+                                    if (nameEntered) {
+                                        textarea.style.display = 'none';
+                                    }
+                        
+                                    textarea.addEventListener('keydown', function(event) {
+                                        if (event.key === 'Enter') {
+                                            event.preventDefault();
+                                            this.value += '\n';
+                                        }
+                                    });
+                        
+                                    textarea.addEventListener('blur', function() {
+                                        const marker = player.querySelector('.marker');
+                                        marker.innerHTML = this.value.replace(/\n/g, '<br>');
+                                        this.style.display = 'none';
+                                        saveMarkers();
+                                    });
+                        
+                                    return player;
+                                }
+                        
+                                function saveMarkers() {
+                                    const markers = [];
+                                    const players = document.querySelectorAll('.player');
+                                    players.forEach(player => {
+                                        const x = parseFloat(player.style.left);
+                                        const y = parseFloat(player.style.top);
+                                        const name = player.querySelector('.marker').innerHTML;
+                                        markers.push({ x, y, name });
+                                    });
+                                    localStorage.setItem('markers', JSON.stringify(markers));
+                                }
+                        
+                                function loadMarkers() {
+                                    const markers = JSON.parse(localStorage.getItem('markers'));
+                                    if (markers) {
+                                        markers.forEach(marker => {
+                                            const player = createPlayer(marker.x, marker.y, marker.name, true);
+                                            soccerField.appendChild(player);
+                                        });
+                                    }
+                                }
+                        
+                                function saveImage() {
+                                    const canvas = document.createElement('canvas');
+                                    canvas.width = soccerField.offsetWidth;
+                                    canvas.height = soccerField.offsetHeight;
+                                    const ctx = canvas.getContext('2d');
+                        
+                                    const img = new Image();
+                                    img.src = 'images/field.png'; // Replace with your soccer field image
+                                    img.onload = function() {
+                                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                        
+                                        const players = document.querySelectorAll('.player');
+                                        players.forEach(player => {
+                                            const x = parseFloat(player.style.left);
+                                            const y = parseFloat(player.style.top);
+                                            const markerText = player.querySelector('.marker').innerHTML;
+                        
+                                            ctx.fillStyle = 'red';
+                                            ctx.beginPath();
+                                            ctx.arc(x, y, 5, 0, Math.PI * 2);
+                                            ctx.fill();
+                        
+                                            ctx.fillStyle = 'black';
+                                            ctx.font = '14px Arial';
+                                            markerText.split('<br>').forEach((line, index) => {
+                                                ctx.fillText(line, x + 10, y + (index * 15));
+                                            });
+                                        });
+                        
+                                        const image = canvas.toDataURL('image/png');
+                                        localStorage.setItem('savedImage', image);
+                                    };
+                                }
+                        
+                                function loadSavedImage() {
+                                    const savedImage = localStorage.getItem('savedImage');
+                                    if (savedImage) {
+                                        soccerField.style.backgroundImage = `url('${savedImage}')`;
+                                    }
+                                    loadMarkers();
+                                }						
 							});
 						</script>
 
