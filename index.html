@@ -58,9 +58,7 @@
 						<h2>
 							This Week's Volo Formation
 						</h2></center>
-						<!--
-						<img src="images/formation.png" alt="volo" style="display: block; margin: 0 auto; width: 1000px; height: auto;">
-						-->
+						<!-- <img src="images/formation.png" alt="volo" style="display: block; margin: 0 auto; width: 1000px; height: auto;"> -->
 						<style>
 							#soccer-field {
 								background-image: url('images/field.jpg'); /* Replace with your soccer field image */
@@ -93,32 +91,32 @@
 						</div>
 						
 						<script>
-							document.addEventListener('DOMContentLoaded', function() {
-								const soccerField = document.getElementById('soccer-field');
-								const clearButton = document.getElementById('clear-button');
-								const saveButton = document.getElementById('save-button');
-
-								// Load saved formation (if any)
-        							loadSavedImage();
-								
-								soccerField.addEventListener('click', function(event) {
-									// Prevent adding a marker if clicking on an existing player or input
-									if (event.target.classList.contains('player') || event.target.classList.contains('name')) {
-										return;
-									}
-									
-									const rect = soccerField.getBoundingClientRect();
-									const x = event.clientX - rect.left;
-									const y = event.clientY - rect.top;
-									
-									const player = createPlayer(x, y, 'X', false);
-            								soccerField.appendChild(player);
-								});
-								
-								clearButton.addEventListener('click', function() {
+                            document.addEventListener('DOMContentLoaded', function() {
+                                const soccerField = document.getElementById('soccer-field');
+                                const clearButton = document.getElementById('clear-button');
+                                const saveButton = document.getElementById('save-button');
+                        
+                                // Load saved image and markers (if any)
+                                loadSavedImage();
+                        
+                                soccerField.addEventListener('click', function(event) {
+                                    if (event.target.classList.contains('player') || event.target.classList.contains('name')) {
+                                        return;
+                                    }
+                        
+                                    const rect = soccerField.getBoundingClientRect();
+                                    const x = event.clientX - rect.left;
+                                    const y = event.clientY - rect.top;
+                        
+                                    const player = createPlayer(x, y, 'X', false);
+                                    soccerField.appendChild(player);
+                                });
+                        
+                                clearButton.addEventListener('click', function() {
                                     soccerField.innerHTML = '';
                                     localStorage.removeItem('savedImage');
                                     localStorage.removeItem('markers');
+                                    clearSavedImageFromGitHub();
                                 });
                         
                                 saveButton.addEventListener('click', function() {
@@ -143,7 +141,10 @@
                                     textarea.addEventListener('keydown', function(event) {
                                         if (event.key === 'Enter') {
                                             event.preventDefault();
-                                            this.value += '\n';
+                                            const marker = player.querySelector('.marker');
+                                            marker.innerHTML = this.value.replace(/\n/g, '<br>');
+                                            this.style.display = 'none';
+                                            saveMarkers();
                                         }
                                     });
                         
@@ -167,19 +168,112 @@
                                         markers.push({ x, y, name });
                                     });
                                     localStorage.setItem('markers', JSON.stringify(markers));
+                                    saveMarkersToGitHub(markers);
                                 }
                         
-                                function loadMarkers() {
-                                    const markers = JSON.parse(localStorage.getItem('markers'));
-                                    if (markers) {
-                                        markers.forEach(marker => {
-                                            const player = createPlayer(marker.x, marker.y, marker.name, true);
-                                            soccerField.appendChild(player);
+                                async function saveMarkersToGitHub(markers) {
+                                    const token = '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';
+                                    const repo = 'aclink88/aclink88.github.io';
+                                    const path = 'markers.json';
+                                    const url = `https://api.github.com/repos/${repo}/contents/${path}`;
+                                    const content = btoa(JSON.stringify(markers));
+                        
+                                    // Fetch current file information to get the SHA
+                                    let sha;
+                                    try {
+                                        const response = await fetch(url, {
+                                            headers: {
+                                                'Authorization': `token ${token}`
+                                            }
                                         });
+                                        if (response.ok) {
+                                            const data = await response.json();
+                                            sha = data.sha;
+                                        }
+                                    } catch (error) {
+                                        console.error('Error fetching SHA:', error);
+                                    }
+                        
+                                    // Save or update file
+                                    try {
+                                        const response = await fetch(url, {
+                                            method: 'PUT',
+                                            headers: {
+                                                'Authorization': `token ${token}`,
+                                                'Content-Type': 'application/json'
+                                            },
+                                            body: JSON.stringify({
+                                                message: 'Update markers.json',
+                                                content: content,
+                                                sha: sha
+                                            })
+                                        });
+                                        const data = await response.json();
+                                        console.log('Save to GitHub response:', data);
+                                    } catch (error) {
+                                        console.error('Error saving markers to GitHub:', error);
                                     }
                                 }
                         
-                                function saveImage() {
+                                async function clearSavedImageFromGitHub() {
+                                    const token = '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';
+                                    const repo = 'aclink88/aclink88.github.io';
+                                    const path = 'savedImage.jpg';
+                                    const url = `https://api.github.com/repos/${repo}/contents/${path}`;
+                        
+                                    // Fetch current file information to get the SHA
+                                    let sha;
+                                    try {
+                                        const response = await fetch(url, {
+                                            headers: {
+                                                'Authorization': `token ${token}`
+                                            }
+                                        });
+                                        if (response.ok) {
+                                            const data = await response.json();
+                                            sha = data.sha;
+                                        }
+                                    } catch (error) {
+                                        console.error('Error fetching SHA:', error);
+                                    }
+                        
+                                    // Delete file
+                                    try {
+                                        const response = await fetch(url, {
+                                            method: 'DELETE',
+                                            headers: {
+                                                'Authorization': `token ${token}`,
+                                                'Content-Type': 'application/json'
+                                            },
+                                            body: JSON.stringify({
+                                                message: 'Delete savedImage.jpg',
+                                                sha: sha
+                                            })
+                                        });
+                                        const data = await response.json();
+                                        console.log('Delete from GitHub response:', data);
+                                    } catch (error) {
+                                        console.error('Error deleting image from GitHub:', error);
+                                    }
+                                }
+                        
+                                async function loadMarkers() {
+                                    const url = 'https://raw.githubusercontent.com/aclink88/aclink88.github.io/main/markers.json';
+                                    try {
+                                        const response = await fetch(url);
+                                        if (response.ok) {
+                                            const markers = await response.json();
+                                            markers.forEach(marker => {
+                                                const player = createPlayer(marker.x, marker.y, marker.name, true);
+                                                soccerField.appendChild(player);
+                                            });
+                                        }
+                                    } catch (error) {
+                                        console.error('Error loading markers:', error);
+                                    }
+                                }
+                        
+                                async function saveImage() {
                                     const canvas = document.createElement('canvas');
                                     canvas.width = soccerField.offsetWidth;
                                     canvas.height = soccerField.offsetHeight;
@@ -187,7 +281,7 @@
                         
                                     const img = new Image();
                                     img.src = 'images/field.jpg'; // Replace with your soccer field image
-                                    img.onload = function() {
+                                    img.onload = async function() {
                                         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
                         
                                         const players = document.querySelectorAll('.player');
@@ -208,8 +302,55 @@
                                             });
                                         });
                         
-                                        const image = canvas.toDataURL('image/jpg');
-                                        localStorage.setItem('savedImage', image);
+                                        canvas.toBlob(async function(blob) {
+                                            const reader = new FileReader();
+                                            reader.readAsDataURL(blob);
+                                            reader.onloadend = async function() {
+                                                const base64data = reader.result.split(',')[1];
+                                                const token = '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';
+                                                const repo = 'aclink88/aclink88.github.io';
+                                                const path = 'savedImage.jpg';
+                                                const url = `https://api.github.com/repos/${repo}/contents/${path}`;
+                                                
+                                                // Fetch current file information to get the SHA
+                                                let sha;
+                                                try {
+                                                    const response = await fetch(url, {
+                                                        headers: {
+                                                            'Authorization': `token ${token}`
+                                                        }
+                                                    });
+                                                    if (response.ok) {
+                                                        const data = await response.json();
+                                                        sha = data.sha;
+                                                    }
+                                                } catch (error) {
+                                                    console.error('Error fetching SHA:', error);
+                                                }
+                        
+                                                // Save or update file
+                                                try {
+                                                    const response = await fetch(url, {
+                                                        method: 'PUT',
+                                                        headers: {
+                                                            'Authorization': `token ${token}`,
+                                                            'Content-Type': 'application/json'
+                                                        },
+                                                        body: JSON.stringify({
+                                                            message: 'Update savedImage.jpg',
+                                                            content: base64data,
+                                                            sha: sha
+                                                        })
+                                                    });
+                                                    const data = await response.json();
+                                                    console.log('Save to GitHub response:', data);
+                                                } catch (error) {
+                                                    console.error('Error saving image to GitHub:', error);
+                                                }
+                        
+                                                localStorage.setItem('savedImage', `data:image/jpg;base64,${base64data}`);
+                                            }
+                                        }, 'image/jpg');
                                     };
                                 }
                         
@@ -217,11 +358,32 @@
                                     const savedImage = localStorage.getItem('savedImage');
                                     if (savedImage) {
                                         soccerField.style.backgroundImage = `url('${savedImage}')`;
+                                    } else {
+                                        loadImageFromGitHub();
                                     }
                                     loadMarkers();
-                                }						
-							});
-						</script>
+                                }
+                        
+                                async function loadImageFromGitHub() {
+                                    const url = 'https://raw.githubusercontent.com/aclink88/aclink88.github.io/main/savedImage.jpg';
+                                    try {
+                                        const response = await fetch(url);
+                                        if (response.ok) {
+                                            const blob = await response.blob();
+                                            const reader = new FileReader();
+                                            reader.readAsDataURL(blob);
+                                            reader.onloadend = function() {
+                                                const base64data = reader.result;
+                                                localStorage.setItem('savedImage', base64data);
+                                                soccerField.style.backgroundImage = `url('${base64data}')`;
+                                            }
+                                        }
+                                    } catch (error) {
+                                        console.error('Error loading image from GitHub:', error);
+                                    }
+                                }
+                            });
+                        </script>
 
         					<img src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExazJ4bGFyMDQ3NDcxbDQ0NDNpeTczdnlxZDQzdmQ2cTM5eWdmY3RkZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o7buiO0t8uLXHBDXO/giphy.gif" alt="CrowMilk" style="display: block; margin: 0 auto; width: 800px; height: auto;">
     					</h1>
