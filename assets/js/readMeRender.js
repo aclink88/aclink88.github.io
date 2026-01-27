@@ -13,18 +13,23 @@ function loadReadMe(repoName) {
     const url = `https://api.github.com/repos/${repoName}/readme`;
 
     fetch(url, {
-        headers: { 'Accept': 'application/vnd.github.VERSION.raw' }  // Fetch the README as raw text
+        headers: { 'Accept': 'application/vnd.github.VERSION.raw' }
     })
     .then(response => response.ok ? response.text() : Promise.reject('Failed to load'))
     .then(readmeText => {
-        // Convert Markdown to HTML
         const readmeHtml = marked.parse(readmeText);
-        // Adjust image URLs to point to the GitHub raw content URL
         const adjustedHtml = readmeHtml.replace(/src="(.\/)?(?!http)([^"]+)"/g, `src="https://raw.githubusercontent.com/${repoName}/master/$2"`);
-        // Load README content into the main div
         const mainDiv = document.getElementById('main');
-        mainDiv.innerHTML = `<div class="readme-container">${adjustedHtml}</div>`;
-        // Reprocess the content with MathJax
+        mainDiv.innerHTML = `<div class="readme-container">${adjustedHtml}</div><div class="lightbox" id="lightbox" onclick="this.style.display='none'"><img id="lightbox-img" src="" alt=""></div>`;
+        
+        // Add click handlers to images
+        document.querySelectorAll('.readme-container img').forEach(img => {
+            img.addEventListener('click', function() {
+                document.getElementById('lightbox-img').src = this.src;
+                document.getElementById('lightbox').style.display = 'flex';
+            });
+        });
+        
         if (window.MathJax) {
             MathJax.typesetPromise([mainDiv]).catch((err) => console.error('MathJax processing error:', err));
         }
