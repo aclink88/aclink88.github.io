@@ -565,6 +565,20 @@ input, select, textarea {
 					padding-top: 3rem;
 				}
 
+/* Resume Specific Styles */
+h3.section-header {
+    border-top: 1px solid #444; /* A subtle border */
+    padding-top: 2rem;
+    margin-top: 2rem;
+}
+
+/* To avoid a border on the very first section header */
+#resume-output > h3.section-header:first-child {
+    border-top: none;
+    padding-top: 0;
+    margin-top: 0;
+}
+
 		@media screen and (max-width: 1680px) {
 
 			.row {
@@ -4740,3 +4754,38 @@ input, select, textarea {
 	#l1 > li:last-child, #l2 + li {
       	    margin-top: 5px; /* reduces the space between the last li of l2 and the next li of l1 */
     	}
+/* Custom Resume Styles */
+#resume-output .section-header {
+    font-size: 1.75em; /* Significantly larger headers */
+    font-weight: bold;
+    margin-top: 2em;
+    margin-bottom: 1em;
+    border-bottom: 2px solid #333;
+    padding-bottom: 0.5em;
+}
+
+#resume-output ul {
+    list-style-position: outside; /* Ensure bullets are visible and indented correctly */
+    padding-left: 20px; /* Standard indentation */
+}
+
+#resume-output ul li {
+    font-size: 1em; /* Parent bullet size */
+    margin-bottom: 0.5em; /* Spacing between list items */
+}
+
+#resume-output ul ul {
+    padding-left: 20px; /* Further indent sub-bullets */
+}
+
+#resume-output ul ul li {
+    font-size: 0.9em; /* Smaller sub-bullets */
+    list-style-type: circle; /* Different bullet for sub-bullets */
+}
+
+#resume-output hr {
+    margin: 2em 0; /* Consistent spacing for line separators */
+    border: 0;
+    border-top: 1px solid #eee; /* Light line separator */
+}
+

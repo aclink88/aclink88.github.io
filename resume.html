@@ -39,74 +39,10 @@
 
 				<!-- Main -->
 					<div id="main">
-
-						<!-- Post -->
-						<section style="text-align: left; padding: 30px; padding-left: 50px; margin-top: 1px; margin-bottom: 1px;">
-						<h2>Work Experience:</h2>
-                            <h3 style="margin-bottom: 5px;">Truist Foundations &amp; Endowments Specialty Practice</h3>
-                            <h4 style="margin-bottom: 5px; margin-top 3px;">Investment Portfolio Manager</h4>
-                            <h5 style="margin-bottom: 5px; margin-top: 3px;">Richmond, VA <i>(February 2018 to April 2022)</i></h5>
-                                <ul id="l1" style="margin-bottom: 15px;">
-                                <li data-list-text="•">Conduct market and portfolio research, primarily utilizing FactSet Financial data applications as well as Python analytical libraries</li>
-                                    <ul id="l2" class="custom-hyphen">
-                                    <li>Perform Monte Carlo simulations &amp; utilize portfolio optimization functions to determine optimal asset allocation to meet client goals</li>
-                                    <li>Employ SPAR (Style, Performance &amp; Risk) returns-based analysis along with peer universe data to determine appropriate portfolio exposures</li>
-                                    <li>Carry out Attribution analysis to provide detailed breakdowns of the aspects of a fund manager’s performance</li>
-                                    </ul>
-                                <li data-list-text="•">Manage institutional portfolios through trade execution, as appropriate per client investment policy</li>
-                                <li data-list-text="•">Compose informational research papers for distribution to current and prospective clients</li>
-                                    <ul id="l3" class="custom-hyphen">
-                                    <li data-list-text="-">Researched and authored a white paper on Inflation Metrics and their validity as performance benchmarks</li>
-                                    </ul>
-                                <li data-list-text="•">Provide administrative support in meeting client requests</li>
-                                    <ul id="l4" class="custom-hyphen">
-                                    <li data-list-text="-">Develop investment review books to provide clients with performance updates</li>
-                                    </ul>
-                                </ul>
-                            <!-- <p style="padding-top: 1pt;text-indent: 0pt;text-align: left;"><br/></p> -->
-                            <h3 style="margin-bottom: 5px;">Virginia Department of Accounts</h3>
-                            <h4 style="margin-bottom: 5px; margin-top 3px;">E-Commerce Analyst</h4>
-                            <h5 style="margin-bottom: 5px; margin-top 3px;">Richmond, VA <i>(July 2013 to January 2018)</i></h3>
-                            <!-- </li></ul></li> -->
-                                <ul id="l1" style="margin-bottom: 5px;">
-                                <li data-list-text="•">Analyze and reconcile ePayables suspense account and monthly statement prior to processing to ensure proper payment</li>
-                                <li data-list-text="•">Calculate and analyze quarterly statistics of the state purchase card program, including:</li>
-                                    <ul id="l5" class="custom-hyphen">
-                                    <li data-list-text="-">Calculate agencies’ utilization rate of charge card program and late payments to vendors</li>
-                                    <li data-list-text="-">Estimate checks saved by implementing state issued credit cards</li>
-                                    </ul>
-                                <li data-list-text="•">Conduct weekly audits related to state issued credit card purchases &amp; spend analysis to maintain adequate spending limits</li>
-                                <li data-list-text="•">Identify duplicate &amp; unprocessed payments to vendors and return these funds to agencies &amp; reissue to vendors, respectively</li>
-                                </ul>
-                        </section>
-                        <section style="text-align: left; padding: 30px; padding-left: 50px; margin-top: 1px; margin-bottom: 1px;">
-                        <h2>Certifications:</h2>
-                            <p style="margin-bottom: 5px;">CFA Charterholder</p> <!-- <p><br/></p> -->
-                        </section>
-                        <section style="text-align: left; padding: 30px; padding-left: 50px; margin-top: 1px; margin-bottom: 1px;">
-                        <h2>Education:</h2>
-                            <h5 style="margin-bottom: 5px;">University of Virginia</h5> 
-                            <p>Master of Science in Data Science <i>(December 2021)</i></p>
-                            <h5 style="margin-bottom: 5px;">Virginia Commonwealth University</h5> 
-                            <p>Master of Science in Finance <i>(May 2015)</i></p>
-                            <h5 style="margin-bottom: 5px;">North Carolina State University</h5>
-                            <p style="margin-bottom: 5px;">Bachelor of Arts in Economics, <i>Cum Laude (May 2013)</i></p>
-                            <p style="margin-bottom: 5px; margin-top: 3px;">Minor in Business Administration with a Concentration in Management</p>
-                        </section>
-                        <section style="text-align: left; padding: 30px; padding-left: 50px; margin-top: 1px; margin-bottom: 1px;">
-                        <h2>Related Coursework:</h2>
-                            <li data-list-text="•">Financial Markets – Analysis of financial securities and performance of different portfolios made up of these instruments against market index benchmarks using Excel</li>
-                            <li data-list-text="•">Derivatives Analysis – Pricing of options using binomial lattices and Black-Scholes formula, as well as implementing various options strategies and graphing them using Excel</li>
-                            <li data-list-text="•">Econometrics – Provided empirical content to theoretical economic concepts by formulating and estimating models</li>
-                            <li data-list-text="•">Mathematical Economics – Economic analysis utilizing mathematical methods, including derivation and exposition of theories</li>
-                        </section>
-                        <!-- <p style="padding-top: 1pt;text-indent: 0pt;text-align: left;"><br/></p> -->
-                        <section style="text-align: left; padding: 30px; padding-left: 50px; margin-top: 1px; margin-bottom: 1px;">
-                        <h2>Skills:</h2>
-                            <li data-list-text="•">Proficient: FactSet Financial Research Terminal &amp; Microsoft Office Applications, includes Word, Excel, Access and PowerPoint</li>
-                            <li data-list-text="•">Experience: Python (predominantly Numpy &amp; Pandas libraries), SAS, SQL, STATA, R Programming &amp; Apache Spark</li>
-                            <li data-list-text="•">Experience: Econometric Modeling and Regression Analysis; both Time Series and Panel Data</li>
-                        </section>
+						<section class="post">
+							<div id="resume-output">
+							</div>
+						</section>
 					</div>
 
 				<!-- Footer -->
@@ -173,6 +109,56 @@
 			<script src="assets/js/breakpoints.min.js"></script>
 			<script src="assets/js/util.js"></script>
 			<script src="assets/js/main.js"></script>
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.16/mammoth.browser.min.js"></script>
+			<script>
+				document.addEventListener('DOMContentLoaded', function() {
+					const resumeOutput = document.getElementById('resume-output');
 
+					function loadResume() {
+						const resumeUrl = '/resume/resume.docx';
+
+						const styleMap = [
+							"p[style-name='Heading 2'] => h3.section-header:fresh",
+							"r[style-name='Strong'] => strong",
+							"p:unordered-list(1) => ul > li:fresh",
+							"p:unordered-list(2) => ul > li > ul > li:fresh",
+							"p:unordered-list(3) => ul > li > ul > li > ul > li:fresh"
+						];
+
+						fetch(resumeUrl)
+							.then(response => {
+								if (!response.ok) {
+									throw new Error('Network response was not ok');
+								}
+								return response.arrayBuffer();
+							})
+							.then(arrayBuffer => {
+								return mammoth.convertToHtml({arrayBuffer: arrayBuffer}, {styleMap: styleMap});
+							})
+							.then(result => {
+								resumeOutput.innerHTML = result.value;
+
+								// Add <hr> after each section header
+								const headers = resumeOutput.querySelectorAll('.section-header');
+								headers.forEach(header => {
+									const hr = document.createElement('hr');
+									header.parentNode.insertBefore(hr, header.nextSibling);
+								});
+
+								if (result.messages) {
+									result.messages.forEach(function(message) {
+										console.warn(message);
+									});
+								}
+							})
+							.catch(error => {
+								console.error("Conversion failed:", error);
+								resumeOutput.innerHTML = "<p>Could not load resume. Make sure you have a resume.docx file in the /resume directory.</p>";
+							});
+					}
+
+					loadResume();
+				});
+			</script>
 	</body>
 </html>
